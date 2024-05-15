@@ -3,6 +3,11 @@
 import { join } from "path";
 import { writeFile } from "fs/promises";
 
+/**
+ * React server action that writes an uploaded file to the filesystem
+ * @param {*} data File/files uploaded through the form
+ * @returns success if file write performed successfully, Error otherwise
+ */
 export async function upload(data) {
   const file = data.get("file");
 

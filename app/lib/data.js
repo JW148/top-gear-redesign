@@ -1,8 +1,9 @@
 const { MongoClient, ObjectId } = require("mongodb");
+import { unstable_noStore as noStore } from "next/cache";
 
 //create a new MongoClient object and connect to the Stock DB
 const client = new MongoClient(process.env.MONGODB_URI);
-const db = client.db("Stock");
+const db = client.db("TopGear");
 
 export async function checkDBConnection() {
   try {
@@ -20,12 +21,14 @@ export async function checkDBConnection() {
 }
 
 export async function getData() {
+  //noStore() Next.js API used to opt out of static rendering (making the components dynamic)
+  noStore();
   try {
     console.log("Connecting to server...");
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     console.log("Connecting to collection...");
-    const collection = db.collection("Ingredients");
+    const collection = db.collection("Cars");
     console.log("Querying collection...");
     const results = await collection.find({}).toArray();
     return results;

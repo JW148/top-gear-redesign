@@ -20,10 +20,12 @@ const db = client.db("TopGear");
  */
 export async function upload(formData) {
   //deconstruct the form data submitted by the client
-  const { model, price, colour, year } = Object.fromEntries(formData.entries());
+  const { model, price, colour, year, description, available, mileage } =
+    Object.fromEntries(formData.entries());
   const fileArr = formData.getAll("files");
   const fileNames = fileArr.map((file) => file.name);
   console.log(fileNames);
+  console.log(model, price, colour, year, description, available, mileage);
 
   /////////////// write uploaded file to file system ////////////////
 
@@ -35,11 +37,8 @@ export async function upload(formData) {
       const buffer = Buffer.from(bytes);
 
       //with the file data in a buffer, we can write it to the filesystem
-      //__dirname gets the current Node directory (currently running in the .next folder) so use static path instead to get into the /app folder
-      const path = join(
-        "C:/Users/Joe/Documents/Coding/top-gear-redesign/public",
-        file.name
-      );
+      //process.cwd() gets the current Node directory
+      const path = join(process.cwd() + "/public/" + file.name);
       await writeFile(path, buffer);
       console.log(`Open ${path} to view the uploaded file`);
     });
@@ -63,6 +62,8 @@ export async function upload(formData) {
       price: price,
       colour: colour,
       year: year,
+      mileage: mileage,
+      available: available ? true : false,
     };
     const result = await collection.insertOne(doc);
     return JSON.stringify({ success: true, response: result });

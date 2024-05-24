@@ -36,3 +36,19 @@ export async function getData() {
     throw new Error("Failed to fetch data from collection: " + err);
   }
 }
+
+export async function getListingById(id) {
+  noStore();
+  try {
+    console.log("Connecting to server...");
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    console.log("Connecting to collection...");
+    const collection = db.collection("Cars");
+    console.log("Querying collection...");
+    const results = await collection.findOne({ _id: new ObjectId(id) });
+    return results;
+  } catch (err) {
+    throw new Error("Failed to fetch data from collection: " + err);
+  }
+}

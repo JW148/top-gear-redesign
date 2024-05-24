@@ -2,24 +2,33 @@
 
 import { upload, getFiles } from "../lib/actions";
 import { Button, Divider, Switch, Card } from "@nextui-org/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function Form() {
   // getFiles();
 
   const [files, setFiles] = useState(null);
   const [isSelected, setIsSelected] = useState(true);
+  const ref = useRef(null);
 
   return (
-    <Card className="w-[30vw] p-4 rounded-lg">
-      <form className="flex flex-col items-center" action={upload}>
+    <Card className="w-[30vw] p-4 rounded-sm">
+      <form
+        className="flex flex-col items-center"
+        action={(formData) => {
+          setFiles(null);
+          upload(formData);
+          ref.current?.reset();
+        }}
+        ref={ref}
+      >
         <input
           className="w-full mb-2
           file:py-3 
-          file:rounded-lg file:border-0
-          file:text-sm file:font-normal
-          file:bg-primary-500 file:text-white
-          hover:file:bg-primary-400 file:w-full"
+          file:rounded-sm file:border-1 file:border-slate-400
+          file:text-base file:font-medium
+          file:bg-white file:text-slate-700
+          hover:file:bg-slate-100 file:w-full"
           type="file"
           name="files"
           multiple
@@ -43,37 +52,37 @@ export default function Form() {
             ))}
         </ul>
         <input
-          className="w-full p-4 bg-slate-200 m-2 mt-6 h-12 rounded-lg border-1.5"
+          className="w-full p-4 bg-slate-200 m-2 mt-6 h-12 rounded-sm border-1.5"
           type="text"
           name="model"
           placeholder="Enter car model"
         />
         <input
-          className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-lg border-1.5"
+          className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-sm border-1.5"
           type="number"
           name="price"
           placeholder="Enter car price"
         />
         <input
-          className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-lg border-1.5"
+          className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-sm border-1.5"
           type="text"
           name="colour"
           placeholder="Enter car colour"
         />
         <input
-          className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-lg border-1.5"
+          className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-sm border-1.5"
           type="number"
           name="year"
           placeholder="Enter car production year"
         />
         <input
-          className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-lg border-1.5"
+          className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-sm border-1.5"
           type="number"
           name="mileage"
           placeholder="Enter car mileage"
         />
         <textarea
-          className="w-full h-40 p-4 bg-slate-200 m-2 mt-4 rounded-lg border-1.5"
+          className="w-full h-40 p-4 bg-slate-200 m-2 mt-4 rounded-sm border-1.5"
           type="text"
           name="description"
           placeholder="Enter a description"
@@ -88,7 +97,11 @@ export default function Form() {
           onValueChange={setIsSelected}
           value={isSelected}
         />
-        <Button className="flex m-2 w-[60%]" type="submit" color="primary">
+        <Button
+          className="flex m-2 w-[60%] text-base text-slate-600 bg-white border-1 border-slate-400 hover:bg-slate-100"
+          type="submit"
+          radius="none"
+        >
           Submit
         </Button>
       </form>

@@ -2,14 +2,18 @@
 
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
 
 export default function Carousel() {
-  const [emblaRef] = useEmblaCarousel();
+  const [emblaRef] = useEmblaCarousel({ loop: true }, [
+    Autoplay({ delay: 4000 }),
+  ]);
   return (
     <div className="embla mx-auto h-screen w-full border" ref={emblaRef}>
       <div className="embla__container h-full">
         <div className="embla__slide relative">
+          <div className="w-full h-full bg-gradient-to-br from-black to-50%"></div>
           <Image
             className="block -z-10"
             style={{ objectFit: "cover" }}

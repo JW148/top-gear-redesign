@@ -2,6 +2,7 @@
 
 import { join } from "path";
 import { writeFile, readdir, unlink } from "fs/promises";
+import { revalidatePath } from "next/cache";
 
 const { MongoClient, ObjectId } = require("mongodb");
 
@@ -63,9 +64,13 @@ export async function upload(formData) {
       colour: colour,
       year: year,
       mileage: mileage,
+      description: description,
       available: available ? true : false,
+      date: new Date().toLocaleString(),
     };
     const result = await collection.insertOne(doc);
+    //clears the cache and triggers a new request to the DB to display the recently added listing without the user having to refresh the page
+    revalidatePath("/admin");
     return JSON.stringify({ success: true, response: result });
   } catch (err) {
     throw new Error("Failed to insert new document into collection: " + err);

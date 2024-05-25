@@ -77,6 +77,25 @@ export async function upload(formData) {
   }
 }
 
+export async function deleteListing(id) {
+  console.log("Delete action " + id);
+  try {
+    console.log("Connecting to server...");
+    await client.connect();
+
+    console.log("Connecting to collection...");
+    const collection = db.collection("Cars");
+
+    console.log("Deleting document " + id);
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+    //clears the cache and triggers a new request to the DB to display the recently added listing without the user having to refresh the page
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (err) {
+    throw new Error("Failed to insert new document into collection: " + err);
+  }
+}
+
 export async function getFiles() {
   const files = await readdir(join(process.cwd() + "/public"));
   console.log("Deleting file " + files[4]);

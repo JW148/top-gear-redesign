@@ -37,7 +37,7 @@ export default function NavBar() {
         </Link>
         <Link
           className={clsx("px-20 hover:underline", {
-            "font-bold underline": pathname === "/showroom",
+            "font-bold underline": pathname.includes("/showroom"),
           })}
           href="/showroom"
         >

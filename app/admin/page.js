@@ -3,7 +3,7 @@ import AdminListingCard from "../ui/adminListingCard";
 import { getData } from "../lib/data";
 
 export default async function Page() {
-  const carData = await getData();
+  let carData = await getData();
   console.log(carData);
   return (
     <main className="flex min-h-screen flex-col justify-center items-center p-24">

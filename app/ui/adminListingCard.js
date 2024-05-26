@@ -11,7 +11,7 @@ export default function AdminListingCard({ details }) {
       <Confirm id={details._id.toString()} />
       <Link href={`/admin/${details._id.toString()}/edit`}>
         <Card
-          className="py-4 m-4 min-w-24 -z-10"
+          className="py-4 m-4 min-w-96 max-w-[400px] -z-10"
           radius="none"
           key={details._id}
         >
@@ -20,15 +20,15 @@ export default function AdminListingCard({ details }) {
               alt="Card background"
               className="object-cover rounded-sm "
               src={`/${details.files[0]}`}
-              width={270}
-              height={270}
+              width={400}
+              height={400}
             />
           </CardHeader>
           <CardBody className="overflow-visible px-4 mt-2">
             <div className="flex flex-row pt-2 justify-between text-slate-600">
               <p className="font-semibold">Model</p>
 
-              <p>{details?.model}</p>
+              <p className="truncate max-w-[70%]">{details?.model}</p>
             </div>
             <div className="flex flex-row pt-2  justify-between text-slate-600">
               <p className="font-semibold">Price</p>

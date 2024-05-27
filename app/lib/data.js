@@ -46,8 +46,20 @@ export async function getListingById(id) {
     console.log("Connecting to collection...");
     const collection = db.collection("Cars");
     console.log("Querying collection...");
-    const results = await collection.findOne({ _id: new ObjectId(id) });
-    return results;
+    const result = await collection.findOne({ _id: new ObjectId(id) });
+    const listing = {
+      _id: result._id.toString(),
+      files: result.files,
+      model: result.model,
+      price: result.price,
+      colour: result.colour,
+      year: result.year,
+      mileage: result.mileage,
+      description: result.description,
+      available: result.available,
+      date: result.date,
+    };
+    return listing;
   } catch (err) {
     throw new Error("Failed to fetch data from collection: " + err);
   }

@@ -3,12 +3,12 @@ import { Button, Card, CardHeader, Switch, CardBody } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 
-import Confirm from "./confirmModel";
+import { ConfirmDeleteListing } from "./confirmModel";
 
 export default function AdminListingCard({ details }) {
   return (
     <div className="relative">
-      <Confirm id={details._id.toString()} />
+      <ConfirmDeleteListing id={details._id.toString()} />
       <Link href={`/admin/${details._id.toString()}/edit`}>
         <Card
           className="py-4 m-4 min-w-96 max-w-[400px] -z-10"

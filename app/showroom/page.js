@@ -10,7 +10,7 @@ export default async function Page() {
       <h1 className="text-4xl font-light text-gray-700">Showroom</h1>
       <div className="flex flex-row flex-wrap justify-center">
         {carData.map((el) => (
-          <ListstingCard details={el} />
+          <ListstingCard details={el} key={el._id} />
         ))}
       </div>
     </main>

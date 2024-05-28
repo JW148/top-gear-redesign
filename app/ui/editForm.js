@@ -82,8 +82,7 @@ export default function EditListing({ details }) {
 
         <div className="flex flex-row overflow-hidden justify-center flex-wrap mt-4">
           {files.map((file) => (
-            <div className="relative">
-              {/* <ConfirmDeleteImage file={file} /> */}
+            <div className="relative" key={file}>
               <Button
                 isIconOnly
                 className="absolute -top-2 -right-2 bg-transparent p-0 m-0 "
@@ -126,7 +125,7 @@ export default function EditListing({ details }) {
           type="number"
           name="price"
           placeholder="Enter car price"
-          value={details.price}
+          defaultValue={details.price}
         />
         <input
           className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-sm border-1.5"
@@ -134,28 +133,28 @@ export default function EditListing({ details }) {
           name="colour"
           placeholder="Enter car colour"
           title="Please enter car colour"
-          value={details.colour}
+          defaultValue={details.colour}
         />
         <input
           className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-sm border-1.5"
           type="number"
           name="year"
           placeholder="Enter car production year"
-          value={details.year}
+          defaultValue={details.year}
         />
         <input
           className="w-full p-4 bg-slate-200 m-2 mt-4 h-12 rounded-sm border-1.5"
           type="number"
           name="mileage"
           placeholder="Enter car mileage"
-          value={details.mileage}
+          defaultValue={details.mileage}
         />
         <textarea
           className="w-full h-40 p-4 bg-slate-200 m-2 mt-4 rounded-sm border-1.5"
           type="text"
           name="description"
           placeholder="Enter a description"
-          value={details.description}
+          defaultValue={details.description}
         />
         <h4 className="font-medium m-2 text-slate-500">Sold | Available</h4>
         <Switch

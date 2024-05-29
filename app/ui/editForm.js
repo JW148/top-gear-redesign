@@ -1,6 +1,6 @@
 "use client";
 
-import { editListing } from "../lib/actions";
+import { editListing, vercelEdit } from "../lib/actions";
 import {
   Button,
   Switch,
@@ -25,7 +25,7 @@ export default function EditListing({ details }) {
     <Card className="w-[30vw] p-4 rounded-sm">
       <form
         className="flex flex-col items-center text-gray-600"
-        action={editListing}
+        action={vercelEdit}
         ref={ref}
       >
         <input

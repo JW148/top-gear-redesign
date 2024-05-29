@@ -1,6 +1,6 @@
 "use client";
 
-import { upload, getFiles, uploadImageVercel } from "../lib/actions";
+import { upload, getFiles, vercelUpload } from "../lib/actions";
 import { Button, Divider, Switch, Card } from "@nextui-org/react";
 import { useState, useRef } from "react";
 
@@ -17,7 +17,7 @@ export default function Form() {
         className="flex flex-col items-center"
         action={(formData) => {
           setFiles(null);
-          uploadImageVercel(formData);
+          vercelUpload(formData);
           ref.current?.reset();
         }}
         ref={ref}

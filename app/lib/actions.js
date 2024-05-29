@@ -104,10 +104,6 @@ export async function deleteListing(id) {
   }
 }
 
-export async function deleteImage(file) {
-  console.log(file);
-}
-
 export async function editListing(formData) {
   //first, get the updated form data
   const {
@@ -239,12 +235,12 @@ export async function getFiles() {
   console.log(files);
 }
 
-////////////////// actions for Vercel build
+////////////////// ACTIONS FOR VERCEL BUILD //////////////////////////////////////
 
-import { put } from "@vercel/blob";
+import { put, del } from "@vercel/blob";
 
 ////////////////////////// for vercel image upload ///////////////////////
-export async function uploadImageVercel(formData) {
+export async function vercelUpload(formData) {
   //deconstruct the form data submitted by the client
   const { model, price, colour, year, description, available, mileage } =
     Object.fromEntries(formData.entries());
@@ -292,4 +288,101 @@ export async function uploadImageVercel(formData) {
   } catch (err) {
     throw new Error("Failed to insert new document into collection: " + err);
   }
+}
+
+export async function vercelEdit(formData) {
+  //first, get the updated form data
+  const {
+    _id,
+    model,
+    price,
+    colour,
+    year,
+    description,
+    available,
+    mileage,
+    files_to_delete,
+    files_to_keep,
+  } = Object.fromEntries(formData.entries());
+
+  //files_to_delete is returned as a single string so they need to be split and turned into an array
+  //NOTE: if there are no files being deleted, the following will still produce an array of length 1, e.g. ['']
+  const filesToDelete = files_to_delete.split(",");
+
+  // //do the same for files_to_keep
+  const filesToKeep = files_to_keep.split(",");
+
+  console.log(filesToKeep);
+  console.log(filesToDelete);
+
+  // //then, get any new files that have been added
+  //NOTE: if no new files are uploaded, the following will still produce an array of length 1
+  const fileArr = formData.getAll("files");
+  console.log(fileArr);
+  //create uniqe ID's for file names
+  const uniqueFiles = fileArr.map(
+    () => Math.random().toString(16).slice(2) + ".jpg"
+  );
+
+  //////////// new image uploads to vercel blob ////////////////
+
+  const blobUrls = await Promise.all(
+    fileArr.map(async (file, i) => {
+      const blob = await put(uniqueFiles[i], file, { access: "public" });
+      return blob.url;
+    })
+  );
+
+  // /////////////////// delete files from vercel blob that were marked for deletion /////////////////////
+  try {
+    //first check if there are files to delete
+    if (filesToDelete[0] !== "") {
+      console.log("Deleting files...");
+      filesToDelete.forEach(async (file) => {
+        await del(file);
+      });
+    }
+  } catch (error) {
+    console.error("Could not delete file " + error);
+  }
+
+  ///////////////// update DB document with new data /////////////////////
+  try {
+    console.log("Connecting to server...");
+    await client.connect();
+
+    console.log("Connecting to collection...");
+    const collection = db.collection("Cars");
+
+    console.log("Inserting new document...");
+
+    //only concat if new files exists
+    const files =
+      fileArr[0].size !== 0 ? filesToKeep.concat(blobUrls) : filesToKeep;
+
+    const updateDoc = {
+      $set: {
+        files: files,
+        model: model,
+        price: price,
+        colour: colour,
+        year: year,
+        mileage: mileage,
+        description: description,
+        available: available ? true : false,
+      },
+    };
+
+    const result = await collection.updateOne(
+      { _id: new ObjectId(_id) },
+      updateDoc
+    );
+    console.log(result);
+    //clears the cache and triggers a new request to the DB to display the recently added listing without the user having to refresh the page
+  } catch (err) {
+    throw new Error("Failed to insert new document into collection: " + err);
+  }
+
+  revalidatePath("/admin");
+  redirect("/admin");
 }

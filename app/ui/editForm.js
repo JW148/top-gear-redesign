@@ -95,7 +95,7 @@ export default function EditListing({ details }) {
                 key={file}
                 alt="Card background"
                 className="m-2 object-cover max-h-[70px]"
-                src={`/${file}`}
+                src={`${file}`}
                 width={100}
                 height={100}
               />

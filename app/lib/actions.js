@@ -238,3 +238,58 @@ export async function getFiles() {
   console.log(join(process.cwd() + "/public"));
   console.log(files);
 }
+
+////////////////// actions for Vercel build
+
+import { put } from "@vercel/blob";
+
+////////////////////////// for vercel image upload ///////////////////////
+export async function uploadImageVercel(formData) {
+  //deconstruct the form data submitted by the client
+  const { model, price, colour, year, description, available, mileage } =
+    Object.fromEntries(formData.entries());
+  const fileArr = formData.getAll("files");
+  console.log(fileArr);
+  //create uniqe ID's for file names
+  const uniqueFiles = fileArr.map(
+    () => Math.random().toString(16).slice(2) + ".jpg"
+  );
+
+  const blobUrls = await Promise.all(
+    fileArr.map(async (file, i) => {
+      const blob = await put(uniqueFiles[i], file, { access: "public" });
+      return blob.url;
+    })
+  );
+
+  console.log(blobUrls);
+
+  ///////////// Record a new entry in the DB ////////////////
+
+  try {
+    console.log("Connecting to server...");
+    await client.connect();
+
+    console.log("Connecting to collection...");
+    const collection = db.collection("Cars");
+
+    console.log("Inserting new document...");
+    const doc = {
+      files: blobUrls,
+      model: model,
+      price: price,
+      colour: colour,
+      year: year,
+      mileage: mileage,
+      description: description,
+      available: available ? true : false,
+      date: new Date().toLocaleString(),
+    };
+    const result = await collection.insertOne(doc);
+    //clears the cache and triggers a new request to the DB to display the recently added listing without the user having to refresh the page
+    revalidatePath("/admin");
+    return JSON.stringify({ success: true, response: result });
+  } catch (err) {
+    throw new Error("Failed to insert new document into collection: " + err);
+  }
+}

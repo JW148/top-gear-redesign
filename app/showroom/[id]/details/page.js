@@ -16,7 +16,7 @@ export default async function Page({ params: { id } }) {
             <Image
               alt="Card background"
               className="object-cover rounded-sm"
-              src={`/${listing.files[0]}`}
+              src={`${listing.files[0]}`}
               width={800}
               height={800}
             />
@@ -84,7 +84,7 @@ export default async function Page({ params: { id } }) {
                 key={file}
                 alt="Card background"
                 className="m-2 object-cover max-h-[400px]"
-                src={`/${file}`}
+                src={`${file}`}
                 width={400}
                 height={400}
               />

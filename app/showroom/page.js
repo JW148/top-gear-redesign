@@ -15,15 +15,6 @@ export default async function Page() {
           <ListstingCard details={el} key={el._id} />
         ))}
       </div>
-      <Image
-        priority
-        src={
-          "https://74lmur9ykhcech90.public.blob.vercel-storage.com/2b608d66ce69d-W4j1ljFjJBq7j3QymPr9yOsmKePMBR.jpg"
-        }
-        alt="Image"
-        width={200}
-        height={200}
-      />
     </main>
   );
 }

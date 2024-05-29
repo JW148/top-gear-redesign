@@ -64,16 +64,7 @@ export default async function Page({ params: { id } }) {
         <div className="font-light text-2xl mt-6 text-gray-600">
           Description
           <p className="text-base leading-loose tracking-wide text-justify mt-4 text-gray-500">
-            The last of the hand built Aston&apos;s, this is a very low mileage
-            Vanquish S 2+2 It has extensive history with every MOT and invoices,
-            we have new sales invoice books and all the keys, The car is as new
-            with a list of extras, Heated front screen, Red brake callipers,
-            Engine pre .heater, Front stone guard, Platinum obsidi steering
-            wheel, Aston battery tender, 2+2 seating arrangement.it has the
-            larger sat/nav screen face lift model. The car is perfect inside and
-            out with the perfect colour combination of Meteorite Silver and
-            Obisidian Hide and must be seen to fully appreciate, it would make
-            the perfect investment for any collector or enthusiast
+            {listing?.description}
           </p>
         </div>
         <div className="font-light text-2xl mt-4 text-gray-600">

@@ -22,7 +22,7 @@ export default function NavBar() {
             src={"/navbar/TopGearLogoLight.png"}
             alt="Top Gear logo"
             priority={true}
-            width={220}
+            width={200}
             height={140}
           />
         </div>
@@ -56,7 +56,7 @@ export default function NavBar() {
             <div className="w-full flex h-[2px] bg-slate-700 mx-auto"></div>
             <Link
               className={clsx("pl-5 pt-5", {
-                "font-medium": pathname === "/",
+                "font-bold": pathname === "/",
               })}
               href="/"
               onClick={() => setMenuOpen(false)}
@@ -65,7 +65,7 @@ export default function NavBar() {
             </Link>
             <Link
               className={clsx("pl-5 pt-5", {
-                "font-medium": pathname.includes("/showroom"),
+                "font-bold": pathname.includes("/showroom"),
               })}
               href="/showroom"
               onClick={() => setMenuOpen(false)}
@@ -74,7 +74,7 @@ export default function NavBar() {
             </Link>
             <Link
               className={clsx("pl-5 py-5", {
-                "font-medium": pathname === "/contact",
+                "font-bold": pathname === "/contact",
               })}
               href="/"
               onClick={() => setMenuOpen(false)}

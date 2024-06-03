@@ -7,7 +7,7 @@ export default function ListstingCard({ details }) {
   return (
     <Link href={`/showroom/${details._id.toString()}/details`}>
       <Card
-        className="py-4 m-4 min-w-96 max-w-[400px] -z-10"
+        className="py-4 m-4 md:w-[400px] w-[90vw] -z-10"
         radius="none"
         key={details._id}
       >

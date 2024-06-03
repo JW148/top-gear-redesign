@@ -10,7 +10,9 @@ export default async function Page({ params: { id } }) {
   return (
     <div className="flex justify-center min-h-screen ">
       <div className="flex flex-col gap-4 w-[80%] m-10">
-        <div className="text-4xl font-light text-gray-700">{listing.model}</div>
+        <div className="md:text-4xl text-3xl font-light text-gray-700">
+          {listing.model}
+        </div>
         <div className="flex flex-col md:flex-row">
           <div className="flex relative overflow-hidden">
             <Image
@@ -21,9 +23,11 @@ export default async function Page({ params: { id } }) {
               height={800}
             />
           </div>
-          <div className="flex flex-col px-10 min-w-[50%] h-auto ml-4 border-1 justify-evenly text-xl  ">
+          <div className="flex flex-col md:px-10 px-2 min-w-[50%] h-auto md:ml-4 md:mt-0 mt-6 border-1 justify-evenly md:text-xl text-lg  ">
             <div className="flex  text-slate-600 ">
-              <p className="font-light text-3xl tracking-wide">Specification</p>
+              <p className="font-light md:text-3xl text-2xl tracking-wide">
+                Specification
+              </p>
             </div>
             <div className="flex flex-row pt-2  justify-between text-gray-600">
               <p className="font-semibold">Price</p>

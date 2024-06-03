@@ -11,7 +11,7 @@ export default function AdminListingCard({ details }) {
       <ConfirmDeleteListing id={details._id.toString()} />
       <Link href={`/admin/${details._id.toString()}/edit`}>
         <Card
-          className="py-4 m-4 min-w-96 max-w-[400px] -z-10"
+          className="py-4 m-4 md:w-[400px] w-[90vw] -z-10"
           radius="none"
           key={details._id}
         >

@@ -22,7 +22,7 @@ export default function EditListing({ details }) {
   };
 
   return (
-    <Card className="w-[30vw] p-4 rounded-sm">
+    <Card className=" m-4 md:w-[500px] w-[90vw] -z-10 p-4 rounded-sm">
       <form
         className="flex flex-col items-center text-gray-600"
         action={vercelEdit}

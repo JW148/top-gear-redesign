@@ -333,7 +333,7 @@ export async function vercelEdit(formData) {
     })
   );
 
-  // /////////////////// delete files from vercel blob that were marked for deletion /////////////////////
+  // /////////////////// delete fziles from vercel blob that were marked for deletion /////////////////////
   try {
     //first check if there are files to delete
     if (filesToDelete[0] !== "") {
@@ -385,4 +385,25 @@ export async function vercelEdit(formData) {
 
   revalidatePath("/admin");
   redirect("/admin");
+}
+
+import Compressor from "compressorjs";
+
+export async function compress(formData) {
+  console.log(formData.getAll("files")[0]);
+  let file = formData.getAll("files")[0];
+
+  const compressedFile = await new Promise((resolve, reject) => {
+    new Compressor(file, {
+      quality: 0.6,
+      success(result) {
+        resolve(result);
+      },
+      error(error) {
+        reject(error);
+      },
+    });
+  });
+
+  console.log(await compressedFile);
 }

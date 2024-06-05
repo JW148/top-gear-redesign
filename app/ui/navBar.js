@@ -27,8 +27,8 @@ export default function NavBar() {
           />
         </div>
         <div className="md:flex flex-col hidden">
-          <p>7 Stoneheap Crofts</p>
-          <p>Bathgate EH47 8BX</p>
+          <p>Address 1</p>
+          <p>Address 2</p>
         </div>
         <div className="flex md:hidden justify-center">
           {menuOpen ? (

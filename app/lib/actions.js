@@ -387,23 +387,18 @@ export async function vercelEdit(formData) {
   redirect("/admin");
 }
 
-import Compressor from "compressorjs";
+import sharp from "sharp";
 
-export async function compress(formData) {
-  console.log(formData.getAll("files")[0]);
-  let file = formData.getAll("files")[0];
+export async function compress(state, formData) {
+  console.log(formData.getAll("files")[0].size);
+  const file = formData.getAll("files")[0];
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
 
-  const compressedFile = await new Promise((resolve, reject) => {
-    new Compressor(file, {
-      quality: 0.6,
-      success(result) {
-        resolve(result);
-      },
-      error(error) {
-        reject(error);
-      },
-    });
-  });
-
-  console.log(await compressedFile);
+  const compressedImage = await sharp(buffer).jpeg({ quality: 80 }).toBuffer();
+  console.log(compressedImage.byteLength);
+  // const path = join(process.cwd() + "/public/" + "compressed.jpeg");
+  // await writeFile(path, compressedImage);
+  // console.log(`Open ${path} to view the uploaded file`);
+  return { data: compressedImage.byteLength };
 }

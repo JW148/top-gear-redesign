@@ -3,11 +3,15 @@
 import { useState, useRef } from "react";
 import { compress } from "../lib/actions";
 import { Button, Card } from "@nextui-org/react";
+import { useFormState } from "react-dom";
 
 export default function Page() {
   const [files, setFiles] = useState(null);
-  const [isSelected, setIsSelected] = useState(true);
   const ref = useRef(null);
+
+  const [state, dispatch] = useFormState(compress, {
+    data: null,
+  });
 
   return (
     <main className="flex min-h-screen flex-col justify-center items-center m-10">
@@ -17,7 +21,7 @@ export default function Page() {
           className="flex flex-col items-center"
           action={(formData) => {
             setFiles(null);
-            compress(formData);
+            dispatch(formData);
             ref.current?.reset();
           }}
           ref={ref}
@@ -51,6 +55,11 @@ export default function Page() {
                 </li>
               ))}
           </ul>
+          {state?.data && (
+            <h4 className="self-start font-semibold text-slate-500">
+              File size after compression - {state.data} bytes
+            </h4>
+          )}
 
           <Button
             className="flex m-2 w-[60%] text-base text-slate-600 bg-white border-1 border-slate-400 hover:bg-slate-100"

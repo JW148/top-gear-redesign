@@ -119,6 +119,7 @@ export default function Carousel() {
                 alt="Home background image"
                 style={{ objectFit: "cover" }}
                 fill={true}
+                priority={true}
               />
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black to-60%"></div>
             </div>
@@ -128,6 +129,7 @@ export default function Carousel() {
                 alt="Home background image"
                 style={{ objectFit: "cover" }}
                 fill={true}
+                priority={true}
               />
               <div className="absolute top-0 left-0 w-full h-full backdrop-blur-lg bg-black/45"></div>
               <div className="absolute w-full top-[35%] text-gray-50 font-extralight mx-auto text-center flex flex-col">
@@ -142,6 +144,7 @@ export default function Carousel() {
                 alt="Home background image"
                 style={{ objectFit: "cover" }}
                 fill={true}
+                priority={true}
               />
               <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-black to-60%"></div>
               <Link
@@ -158,6 +161,7 @@ export default function Carousel() {
               alt="Home background image"
               style={{ objectFit: "cover" }}
               fill={true}
+              priority={true}
             />
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black via-transparent to-black to-90%"></div>
             <p className="absolute w-full top-[5%] px-11 text-gray-100 text-lg font-extralight mx-auto text-pretty text-center tracking-wider ">
@@ -172,6 +176,7 @@ export default function Carousel() {
               alt="Home background image"
               style={{ objectFit: "cover" }}
               fill={true}
+              priority={true}
             />
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black to-black/15"></div>
             <p className="absolute w-full top-[60%] px-11 text-gray-100 text-lg font-extralight mx-auto text-pretty text-center tracking-wider ">
@@ -186,6 +191,7 @@ export default function Carousel() {
               alt="Home background image"
               style={{ objectFit: "cover" }}
               fill={true}
+              priority={true}
             />
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black to-70%"></div>
             <p className="absolute w-full bottom-[15%] px-11 text-gray-100 text-lg font-extralight mx-auto text-pretty text-center tracking-wider ">

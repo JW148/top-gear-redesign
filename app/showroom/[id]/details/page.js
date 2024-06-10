@@ -59,6 +59,7 @@ export default async function Page({ params: { id } }) {
               <Button
                 className="flex m-2 w-[40%] text-base text-gray-700 bg-white border-1 border-gray-500 hover:bg-slate-100 hover:text-gray-900"
                 radius="none"
+                disableRipple={true}
               >
                 Contact
               </Button>

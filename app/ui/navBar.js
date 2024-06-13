@@ -8,10 +8,12 @@ import { IoMenu } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { Button } from "@nextui-org/react";
 import { useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function NavBar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   return (
     <>
@@ -81,6 +83,17 @@ export default function NavBar() {
             >
               Contact
             </Link>
+            {session && (
+              <Link
+                className={clsx("pl-5 py-5", {
+                  "font-bold": pathname === "/admin",
+                })}
+                href="/admin"
+                onClick={() => setMenuOpen(false)}
+              >
+                Admin
+              </Link>
+            )}
           </div>
         )}
       </div>
@@ -104,12 +117,22 @@ export default function NavBar() {
         </Link>
         <Link
           className={clsx("px-20 hover:underline", {
-            "font-nprmal underline": pathname === "/contact",
+            "font-normal underline": pathname === "/contact",
           })}
           href="/"
         >
           Contact
         </Link>
+        {session && (
+          <Link
+            className={clsx("px-20 hover:underline", {
+              "font-normal underline": pathname === "/admin",
+            })}
+            href="/admin"
+          >
+            Admin
+          </Link>
+        )}
       </div>
     </>
   );

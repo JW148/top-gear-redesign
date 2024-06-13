@@ -64,3 +64,18 @@ export async function getListingById(id) {
     throw new Error("Failed to fetch data from collection: " + err);
   }
 }
+
+export async function getUser(username) {
+  noStore();
+  try {
+    console.log("Connecting to server");
+    await client.connect();
+    console.log("Connecting to collection...");
+    const collection = db.collection("Users");
+    console.log("Querying collection...");
+    const result = await collection.findOne({ username: username });
+    return result;
+  } catch (err) {
+    throw new Error("Failed to fetch data from collection: " + err);
+  }
+}

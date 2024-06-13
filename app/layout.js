@@ -7,6 +7,7 @@ import { Providers } from "./lib/providers";
 const inter = Inter({ subsets: ["latin"] });
 
 import NavBar from "./ui/navBar";
+import Footer from "./ui/footer";
 
 export const metadata = {
   title: "Create Next App",
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <NavBar />
           {children}
+          <Footer />
         </Providers>
       </body>
     </html>

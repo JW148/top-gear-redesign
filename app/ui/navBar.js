@@ -7,13 +7,18 @@ import clsx from "clsx";
 import { IoMenu } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { Button } from "@nextui-org/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function NavBar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: session } = useSession();
+
+  useEffect(() => {
+    const el = document.getElementById("dropdown");
+    console.log(el);
+  }, []);
 
   return (
     <>
@@ -28,10 +33,9 @@ export default function NavBar() {
             height={140}
           />
         </div>
-        <div className="md:flex flex-col hidden">
-          <p>Address 1</p>
-          <p>Address 2</p>
-        </div>
+        <p className="md:flex md:justify-self-center hidden">
+          info@topgear-cars.co.uk
+        </p>
         <div className="flex md:hidden justify-center">
           {menuOpen ? (
             <Button
@@ -53,8 +57,13 @@ export default function NavBar() {
             </Button>
           )}
         </div>
+      </div>
+      <div className="flex relative">
         {menuOpen && (
-          <div className="flex flex-col font-light text-start text-gray-100 bg-black/65 backdrop-blur-2xl shadow-md w-full absolute -bottom-[165px] left-0">
+          <div
+            id="dropdown"
+            className="flex flex-col font-light text-start text-gray-100 bg-black/65 backdrop-blur-2xl shadow-md w-full z-10 absolute top-0"
+          >
             <div className="w-full flex h-[2px] bg-slate-700 mx-auto"></div>
             <Link
               className={clsx("pl-5 pt-5", {
@@ -75,7 +84,7 @@ export default function NavBar() {
               Showroom
             </Link>
             <Link
-              className={clsx("pl-5 py-5", {
+              className={clsx("pl-5 pt-5", {
                 "font-bold": pathname === "/contact",
               })}
               href="/"
@@ -97,6 +106,7 @@ export default function NavBar() {
           </div>
         )}
       </div>
+
       <div className="w-full md:flex h-[2px] bg-slate-700 mx-auto hidden"></div>
       <div className="md:flex md:flex-row sticky justify-center items-center top-0 bg-slate-100 h-14 text-2xl font-light text-gray-800 shadow-xl z-10 hidden">
         <Link

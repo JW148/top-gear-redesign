@@ -1,11 +1,11 @@
 import ListstingCard from "../ui/listingCard";
 
-import { getData } from "../lib/data";
+import { getShowroomData } from "../lib/data";
 
 import Image from "next/image";
 
 export default async function Page() {
-  const carData = await getData();
+  const carData = await getShowroomData();
   console.log(carData);
   return (
     <main className="flex min-h-screen flex-col justify-center items-center m-10">

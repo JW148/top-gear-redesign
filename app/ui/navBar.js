@@ -7,18 +7,13 @@ import clsx from "clsx";
 import { IoMenu } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { Button } from "@nextui-org/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function NavBar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: session } = useSession();
-
-  useEffect(() => {
-    const el = document.getElementById("dropdown");
-    console.log(el);
-  }, []);
 
   return (
     <>
@@ -29,7 +24,7 @@ export default function NavBar() {
             src={"/navbar/TopGearLogoLight.png"}
             alt="Top Gear logo"
             priority={true}
-            width={200}
+            width={300}
             height={140}
           />
         </div>

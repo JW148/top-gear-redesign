@@ -417,3 +417,52 @@ export async function compress(state, formData) {
   //   // console.log(`Open ${path} to view the uploaded file`);
   //   return { data: compressedImage.byteLength };
 }
+
+//////////////////////////////////// MYSQL ///////////////////////////////////////////
+
+import mysql from "mysql2/promise";
+
+//create the MySQL client
+const pool = mysql.createPool({
+  host: "localhost",
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASS,
+  database: "topgear",
+  // port: 3306,
+  // password: '',
+});
+
+export async function createListing(formData) {
+  //deconstruct the form data submitted by the client
+  const { model, price, colour, year, description, available, mileage } =
+    Object.fromEntries(formData.entries());
+
+  console.log("Inserting new listing...");
+  try {
+    //connect to the mysql db
+    const connection = await pool.getConnection();
+
+    // const sql = '
+    // INSERT INTO `listings` (id, model, price, colour, year, description, available, mileage)
+    // VALUES (UUID(), ${model}, ${parseInt(
+    //   price
+    // )}, ${colour}, ${year}, ${description.replace(/(\r\n|\n|\r)/gm, "")}, ${
+    //   available ? 1 : 0
+    // }, ${parseInt(mileage)})
+    // ';
+    const sql = `
+      INSERT INTO listings (id, model, price, colour, year, description, available, mileage, date) VALUES (UUID(), '${model}', '${parseInt(
+      price
+    )}', '${colour}', '${year}', '${description}', '${
+      available ? 1 : 0
+    }', '${parseInt(mileage)}', '${new Date().toLocaleString()}')
+    `;
+    const [result, fields] = await connection.query(sql);
+    console.log(result);
+    console.log(fields);
+
+    connection.release();
+  } catch (error) {
+    console.log(error);
+  }
+}

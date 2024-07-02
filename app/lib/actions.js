@@ -390,15 +390,30 @@ export async function vercelEdit(formData) {
 import sharp from "sharp";
 
 export async function compress(state, formData) {
-  console.log(formData.getAll("files")[0].size);
-  const file = formData.getAll("files")[0];
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+  const fileArr = formData.getAll("files");
+  fileArr.forEach(async (file) => {
+    //read file
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    //compress file
+    const compressedImg = await sharp(buffer)
+      .jpeg({ quality: 30 })
+      .withMetadata()
+      .toBuffer();
+    //write file
+    const path = join(process.cwd() + "/public/compressed/" + file.name);
+    await writeFile(path, compressedImg);
+    console.log(`Open ${path} to view the uploaded file`);
+  });
+  //   console.log(formData.getAll("files")[0].size);
+  //   const file = formData.getAll("files")[0];
+  //   const bytes = await file.arrayBuffer();
+  //   const buffer = Buffer.from(bytes);
 
-  const compressedImage = await sharp(buffer).jpeg({ quality: 80 }).toBuffer();
-  console.log(compressedImage.byteLength);
-  // const path = join(process.cwd() + "/public/" + "compressed.jpeg");
-  // await writeFile(path, compressedImage);
-  // console.log(`Open ${path} to view the uploaded file`);
-  return { data: compressedImage.byteLength };
+  //   const compressedImage = await sharp(buffer).jpeg({ quality: 60 }).toBuffer();
+  //   console.log(compressedImage.byteLength);
+  //   // const path = join(process.cwd() + "/public/" + "compressed.jpeg");
+  //   // await writeFile(path, compressedImage);
+  //   // console.log(`Open ${path} to view the uploaded file`);
+  //   return { data: compressedImage.byteLength };
 }

@@ -421,6 +421,7 @@ export async function compress(state, formData) {
 //////////////////////////////////// MYSQL ///////////////////////////////////////////
 
 import mysql from "mysql2/promise";
+import { randomUUID } from "crypto";
 
 //create the MySQL client
 const pool = mysql.createPool({
@@ -428,41 +429,104 @@ const pool = mysql.createPool({
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASS,
   database: "topgear",
-  // port: 3306,
-  // password: '',
 });
 
 export async function createListing(formData) {
   //deconstruct the form data submitted by the client
   const { model, price, colour, year, description, available, mileage } =
     Object.fromEntries(formData.entries());
+  //get the files that were uploaded by the client
+  const fileArr = formData.getAll("files");
 
-  console.log("Inserting new listing...");
+  //create a UUID id for the listing
+  const id = randomUUID();
+
+  //create a new listing entry on the DB
+  await newListingEntry(
+    id,
+    model,
+    price,
+    colour,
+    year,
+    description,
+    available,
+    mileage
+  );
+
+  //compress + rename the uploaded images + create a new image entry in the DB
+  fileArr.forEach(async (file) => {
+    //compress and rename
+    const result = await handleImage(file);
+    //create new image entry
+    await newImageListing(result.fileName, id);
+  });
+}
+
+//creates a new listing entry in the listings table
+async function newListingEntry(
+  id,
+  model,
+  price,
+  colour,
+  year,
+  description,
+  available,
+  mileage
+) {
   try {
     //connect to the mysql db
     const connection = await pool.getConnection();
 
-    // const sql = '
-    // INSERT INTO `listings` (id, model, price, colour, year, description, available, mileage)
-    // VALUES (UUID(), ${model}, ${parseInt(
-    //   price
-    // )}, ${colour}, ${year}, ${description.replace(/(\r\n|\n|\r)/gm, "")}, ${
-    //   available ? 1 : 0
-    // }, ${parseInt(mileage)})
-    // ';
+    //first, create a new listing entry
+
     const sql = `
-      INSERT INTO listings (id, model, price, colour, year, description, available, mileage, date) VALUES (UUID(), '${model}', '${parseInt(
+      INSERT INTO listings (listingID, model, price, colour, year, description, available, mileage, createdAt) VALUES ('${id}', '${model}', '${parseInt(
       price
     )}', '${colour}', '${year}', '${description}', '${
       available ? 1 : 0
-    }', '${parseInt(mileage)}', '${new Date().toLocaleString()}')
+    }', '${parseInt(mileage)}', '${new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ")}')
     `;
-    const [result, fields] = await connection.query(sql);
-    console.log(result);
-    console.log(fields);
+    //complete the query
+    await connection.query(sql);
 
+    //close the connection to the DB
     connection.release();
   } catch (error) {
     console.log(error);
   }
+}
+
+async function newImageListing(imageID, listingID) {
+  try {
+    //connect to the mysql db
+    const connection = await pool.getConnection();
+
+    const sql = `
+      INSERT INTO images (imageID, listingID) VALUES ('${imageID}', '${listingID}')
+    `;
+    await connection.query(sql);
+    connection.release();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function handleImage(file) {
+  //create a unique name for the file
+  const fileName = Math.random().toString(16).slice(2) + ".jpg";
+  //read file
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  //compress file
+  const compressedImg = await sharp(buffer)
+    .jpeg({ quality: 30 })
+    .withMetadata()
+    .toBuffer();
+  //write file
+  const path = join(process.cwd() + "/public/images/" + fileName);
+  await writeFile(path, compressedImg);
+  return { fileName: fileName, path: path };
 }

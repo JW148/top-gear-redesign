@@ -3,19 +3,18 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function ListstingCard({ details }) {
-  console.log(details._id.toString());
   return (
-    <Link href={`/showroom/${details._id.toString()}/details`}>
+    <Link href={`/showroom/${details.listingID}/details`}>
       <Card
         className="py-4 m-4 md:w-[400px] w-[90vw] -z-10"
         radius="none"
-        key={details._id}
+        key={details.listingID}
       >
         <CardHeader className="pb-0 pt-0 px-4 flex-col items-start">
           <Image
             alt="Card background"
             className="object-cover rounded-sm"
-            src={`${details.files[0]}`}
+            src={`/images/${details.images[0]}`}
             width={400}
             height={400}
           />

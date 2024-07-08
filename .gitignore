@@ -36,9 +36,8 @@ yarn-error.log*
 next-env.d.ts
 
 # uploads folder
-/app/uploads/
+/public/
 
 #environment variables
 .env
-
 

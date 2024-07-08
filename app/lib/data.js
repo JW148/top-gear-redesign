@@ -159,3 +159,28 @@ export async function getShowroomDataSQL() {
     console.log(error);
   }
 }
+
+export async function getListingByIdSQL(id) {
+  noStore();
+  try {
+    //connect to the mysql db
+    const connection = await pool.getConnection();
+    //write the quert to join the listing table entry with its corresponding entries in the images table
+    //uses the JSON_ARRAYAGG to group the joined results in an array (as apposed to returning a new row for each image)
+    const sql = `
+    SELECT l.listingID, l.model, l.price, l.colour, l.year, l.mileage, l.description, l.available, l.createdAt, JSON_ARRAYAGG(images.imageID) AS images FROM listings as l
+    INNER JOIN images
+    ON l.listingID=images.listingID AND l.listingID = '${id}'
+    GROUP BY l.listingID;
+    `;
+
+    const [rows, fields] = await connection.query(sql);
+
+    //close the connection to the DB
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+}

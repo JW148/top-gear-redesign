@@ -1,3 +1,5 @@
+"use server";
+
 const { MongoClient, ObjectId } = require("mongodb");
 import { unstable_noStore as noStore } from "next/cache";
 
@@ -101,42 +103,58 @@ export async function getUser(username) {
 
 import mysql from "mysql2/promise";
 
-const connection = await mysql.createConnection({
+//create the MySQL client
+const pool = mysql.createPool({
   host: "localhost",
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASS,
   database: "topgear",
 });
-console.log("Connnected");
 
-export async function createListingsTable() {
+export async function getAdminDataSQL() {
+  noStore();
   try {
-    const sql = `CREATE TABLE IF NOT EXISTS listings(
-      id VARCHAR(36) PRIMARY KEY NOT NULL,
-      model VARCHAR(255) NOT NULL,
-      price INT NOT NULL,
-      colour VARCHAR(255) NOT NULL,
-      year VARCHAR(255) NOT NULL,
-      mileage INT NOT NULL,
-      description TEXT NOT NULL,
-      available BOOL NOT NULL,
-      createdAt DATETIME NOT NULL
-    );`;
-    const createTable = await connection.query(sql);
-    console.log(createTable);
+    //connect to the mysql db
+    const connection = await pool.getConnection();
+    //write the quert to join the listing table entry with its corresponding entries in the images table
+    //uses the JSON_ARRAYAGG to group the joined results in an array (as apposed to returning a new row for each image)
+    const sql = `
+    SELECT l.listingID, l.model, l.price, l.colour, l.year, l.mileage, l.description, l.available, l.createdAt, JSON_ARRAYAGG(images.imageID) AS images FROM listings as l
+    INNER JOIN images
+    ON l.listingID=images.listingID
+    GROUP BY l.listingID;
+    `;
+    //run the query
+    const [rows, fields] = await connection.query(sql);
+    //close the connection to the DB
+    connection.release();
+    //return the data to the client
+    return rows;
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function createImageTable() {
+export async function getShowroomDataSQL() {
+  noStore();
   try {
-    const sql = `CREATE TABLE IF NOT EXISTS images(
-      imageID VARCHAR (255) PRIMARY KEY NOT NULL,
-      listingID VARCHAR(36) NOT NULL
-    )`;
-    const createTable = await connection.query(sql);
-    console.log(createTable);
+    //connect to the mysql db
+    const connection = await pool.getConnection();
+    //write the quert to join the listing table entry with its corresponding entries in the images table
+    //uses the JSON_ARRAYAGG to group the joined results in an array (as apposed to returning a new row for each image)
+    const sql = `
+    SELECT l.listingID, l.model, l.price, l.colour, l.year, l.mileage, l.description, l.available, l.createdAt, JSON_ARRAYAGG(images.imageID) AS images FROM listings as l
+    INNER JOIN images
+    ON l.listingID=images.listingID
+    GROUP BY l.listingID;
+    `;
+
+    const [rows, fields] = await connection.query(sql);
+
+    //close the connection to the DB
+    connection.release();
+
+    return rows;
   } catch (error) {
     console.log(error);
   }

@@ -103,20 +103,28 @@ export async function getUser(username) {
 
 import mysql from "mysql2/promise";
 
-//create the MySQL client
-const pool = mysql.createPool({
-  host: "localhost",
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASS,
-  database: "topgear",
-});
+async function createConnection() {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DATABASE,
+    });
+    return connection;
+  } catch (error) {
+    console.log("Error connecting to the DB");
+    console.error(error);
+  }
+}
 
 export async function getAdminDataSQL() {
   noStore();
+
+  //connect to the DB
+  const connection = await createConnection();
+
   try {
-    //connect to the mysql db
-    const connection = await pool.getConnection();
-    //write the quert to join the listing table entry with its corresponding entries in the images table
     //uses the JSON_ARRAYAGG to group the joined results in an array (as apposed to returning a new row for each image)
     const sql = `
     SELECT l.listingID, l.model, l.price, l.colour, l.year, l.mileage, l.description, l.available, l.createdAt, JSON_ARRAYAGG(images.imageID) AS images FROM listings as l
@@ -126,21 +134,23 @@ export async function getAdminDataSQL() {
     `;
     //run the query
     const [rows, fields] = await connection.query(sql);
-    //close the connection to the DB
-    connection.release();
+
     //return the data to the client
     return rows;
   } catch (error) {
     console.log(error);
+  } finally {
+    await connection.end();
   }
 }
 
 export async function getShowroomDataSQL() {
   noStore();
+
+  //connect to the DB
+  const connection = await createConnection();
+
   try {
-    //connect to the mysql db
-    const connection = await pool.getConnection();
-    //write the quert to join the listing table entry with its corresponding entries in the images table
     //uses the JSON_ARRAYAGG to group the joined results in an array (as apposed to returning a new row for each image)
     const sql = `
     SELECT l.listingID, l.model, l.price, l.colour, l.year, l.mileage, l.description, l.available, l.createdAt, JSON_ARRAYAGG(images.imageID) AS images FROM listings as l
@@ -151,20 +161,21 @@ export async function getShowroomDataSQL() {
 
     const [rows, fields] = await connection.query(sql);
 
-    //close the connection to the DB
-    connection.release();
-
     return rows;
   } catch (error) {
     console.log(error);
+  } finally {
+    await connection.end();
   }
 }
 
 export async function getListingByIdSQL(id) {
   noStore();
+
+  //connect to the DB
+  const connection = await createConnection();
+
   try {
-    //connect to the mysql db
-    const connection = await pool.getConnection();
     //write the quert to join the listing table entry with its corresponding entries in the images table
     //uses the JSON_ARRAYAGG to group the joined results in an array (as apposed to returning a new row for each image)
     const sql = `
@@ -176,11 +187,36 @@ export async function getListingByIdSQL(id) {
 
     const [rows, fields] = await connection.query(sql);
 
-    //close the connection to the DB
-    connection.release();
-
     return rows;
   } catch (error) {
     console.log(error);
+  } finally {
+    await connection.end();
+  }
+}
+
+import { join } from "path";
+import { writeFile, readdir, unlink } from "fs/promises";
+
+export async function deleteListingSQL(id) {
+  const connection = await createConnection();
+  try {
+    //first delete all the images associated with the specified listing on the local disk
+    const sql1 = `SELECT JSON_ARRAYAGG(images.imageID) AS images FROM images WHERE images.listingID = '${id}';`;
+    const [rows, fields] = await connection.query(sql1);
+    let images = rows[0].images;
+    //delete all images on disk
+    images.forEach(async (file) => {
+      await unlink(join(process.cwd() + "/public/images/" + file));
+    });
+
+    //then delete the listing entry from the listings table
+    //NOTE: we don't explicitly need to delete the associated images from the images table seperately because of the foreign key relation being set to cascade
+    const sql2 = `DELETE FROM listings WHERE listings.listingID = '${id}';`;
+    await connection.query(sql2);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await connection.end();
   }
 }

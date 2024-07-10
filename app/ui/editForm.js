@@ -10,9 +10,10 @@ import {
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { PiMinusCircleFill } from "react-icons/pi";
+import Link from "next/link";
 
 export default function EditListing({ details }) {
-  const [files, setFiles] = useState(details.files);
+  const [files, setFiles] = useState(details.images);
   const [newFiles, setNewFiles] = useState(null);
   const [isSelected, setIsSelected] = useState(details.available);
   const ref = useRef(null);
@@ -32,7 +33,7 @@ export default function EditListing({ details }) {
           className="w-full p-4 bg-slate-200 m-2 mb-6 h-12 rounded-sm border-1.5 text-gray-400"
           type="text"
           name="_id"
-          defaultValue={details._id}
+          defaultValue={details.listingID}
           readOnly
         />
         <input
@@ -47,7 +48,7 @@ export default function EditListing({ details }) {
           className="w-full p-4 bg-slate-200 m-2 mb-6 h-12 rounded-sm border-1.5 text-gray-400"
           type="text"
           name="files_to_delete"
-          defaultValue={details.files.filter((x) => !files.includes(x))}
+          defaultValue={details.images.filter((x) => !files.includes(x))}
           readOnly
           hidden
         />
@@ -95,7 +96,7 @@ export default function EditListing({ details }) {
                 key={file}
                 alt="Card background"
                 className="m-2 object-cover max-h-[70px]"
-                src={`${file}`}
+                src={`/images/${file}`}
                 width={100}
                 height={100}
               />
@@ -165,13 +166,23 @@ export default function EditListing({ details }) {
           onValueChange={setIsSelected}
           value={isSelected}
         />
-        <Button
-          className="flex m-2 w-[60%] text-base text-slate-600 bg-white border-1 border-slate-400 hover:bg-slate-100"
-          type="submit"
-          radius="none"
-        >
-          Update
-        </Button>
+        <div className="flex flex-row w-full">
+          <Button
+            as={Link}
+            href="/admin"
+            className="flex m-2 flex-1 text-base text-red-600 bg-white border-1 border-red-600 hover:bg-slate-100"
+            radius="none"
+          >
+            Cancel
+          </Button>
+          <Button
+            className="flex m-2 flex-1 text-base text-slate-600 bg-white border-1 border-slate-400 hover:bg-slate-100"
+            type="submit"
+            radius="none"
+          >
+            Update
+          </Button>
+        </div>
       </form>
     </Card>
   );

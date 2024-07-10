@@ -5,10 +5,11 @@ import {
   createListingsTable,
   getShowroomDataSQL,
   getListingByIdSQL,
+  deleteListingSQL,
 } from "./lib/data";
 
 export default async function Home() {
-  console.log(await getListingByIdSQL("cbf82108-51de-4cf3-b050-9615eb0fb920"));
+  await deleteListingSQL("26cf0607-3e05-45f4-af88-bbf5d085d4b3");
   return (
     <main className="flex flex-col min-h-screen items-center ">
       <Carousel />

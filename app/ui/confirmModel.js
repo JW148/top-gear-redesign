@@ -14,7 +14,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 
-import { deleteListing } from "../lib/actions";
+import { deleteListingSQL } from "../lib/actions";
 
 import { PiMinusCircleFill } from "react-icons/pi";
 
@@ -22,7 +22,7 @@ export function ConfirmDeleteListing({ id }) {
   //controls confirmation model state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const deleteListingById = deleteListing.bind(null, id);
+  const deleteListingById = deleteListingSQL.bind(null, id);
   return (
     <>
       <Button

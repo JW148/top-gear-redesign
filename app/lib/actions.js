@@ -423,13 +423,20 @@ export async function compress(state, formData) {
 import mysql from "mysql2/promise";
 import { randomUUID } from "crypto";
 
-//create the MySQL client
-const pool = mysql.createPool({
-  host: "localhost",
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASS,
-  database: "topgear",
-});
+async function createConnection() {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DATABASE,
+    });
+    return connection;
+  } catch (error) {
+    console.log("Error connecting to the DB");
+    console.error(error);
+  }
+}
 
 export async function createListing(formData) {
   //deconstruct the form data submitted by the client
@@ -460,6 +467,8 @@ export async function createListing(formData) {
     //create new image entry
     await newImageListing(result.fileName, id);
   });
+  revalidatePath("/admin");
+  redirect("/admin");
 }
 
 //creates a new listing entry in the listings table
@@ -473,10 +482,9 @@ async function newListingEntry(
   available,
   mileage
 ) {
-  try {
-    //connect to the mysql db
-    const connection = await pool.getConnection();
+  const connection = await createConnection();
 
+  try {
     //first, create a new listing entry
 
     const sql = `
@@ -491,26 +499,24 @@ async function newListingEntry(
     `;
     //complete the query
     await connection.query(sql);
-
-    //close the connection to the DB
-    connection.release();
   } catch (error) {
     console.log(error);
+  } finally {
+    await connection.end();
   }
 }
 
 async function newImageListing(imageID, listingID) {
+  const connection = await createConnection();
   try {
-    //connect to the mysql db
-    const connection = await pool.getConnection();
-
     const sql = `
       INSERT INTO images (imageID, listingID) VALUES ('${imageID}', '${listingID}')
     `;
     await connection.query(sql);
-    connection.release();
   } catch (error) {
     console.log(error);
+  } finally {
+    await connection.end();
   }
 }
 
@@ -529,4 +535,28 @@ async function handleImage(file) {
   const path = join(process.cwd() + "/public/images/" + fileName);
   await writeFile(path, compressedImg);
   return { fileName: fileName, path: path };
+}
+
+export async function deleteListingSQL(id) {
+  const connection = await createConnection();
+  try {
+    //first delete all the images associated with the specified listing on the local disk
+    const sql1 = `SELECT JSON_ARRAYAGG(images.imageID) AS images FROM images WHERE images.listingID = '${id}';`;
+    const [rows, fields] = await connection.query(sql1);
+    let images = rows[0].images;
+    //delete all images on disk
+    images.forEach(async (file) => {
+      await unlink(join(process.cwd() + "/public/images/" + file));
+    });
+
+    //then delete the listing entry from the listings table
+    //NOTE: we don't explicitly need to delete the associated images from the images table seperately because of the foreign key relation being set to cascade
+    const sql2 = `DELETE FROM listings WHERE listings.listingID = '${id}';`;
+    await connection.query(sql2);
+    revalidatePath("/admin");
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await connection.end();
+  }
 }

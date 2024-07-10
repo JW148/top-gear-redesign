@@ -1,7 +1,7 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import { getUser } from "@/app/lib/data";
+import { getUserSQL } from "@/app/lib/data";
 
 const handler = NextAuth({
   pages: {
@@ -21,7 +21,7 @@ const handler = NextAuth({
         //get the credentials from the request
         const { username, password } = credentials;
         //get the user from the DB by username
-        const user = await getUser(username);
+        const user = await getUserSQL(username);
 
         console.log(user);
 

@@ -195,27 +195,14 @@ export async function getListingByIdSQL(id) {
   }
 }
 
-import { join } from "path";
-import { writeFile, readdir, unlink } from "fs/promises";
-
-export async function deleteListingSQL(id) {
+export async function getUserSQL(username) {
+  noStore();
   const connection = await createConnection();
   try {
-    //first delete all the images associated with the specified listing on the local disk
-    const sql1 = `SELECT JSON_ARRAYAGG(images.imageID) AS images FROM images WHERE images.listingID = '${id}';`;
-    const [rows, fields] = await connection.query(sql1);
-    let images = rows[0].images;
-    //delete all images on disk
-    images.forEach(async (file) => {
-      await unlink(join(process.cwd() + "/public/images/" + file));
-    });
-
-    //then delete the listing entry from the listings table
-    //NOTE: we don't explicitly need to delete the associated images from the images table seperately because of the foreign key relation being set to cascade
-    const sql2 = `DELETE FROM listings WHERE listings.listingID = '${id}';`;
-    await connection.query(sql2);
+    const sql = `SELECT * FROM users WHERE username = '${username}';`;
+    const [res, fields] = await connection.query(sql);
+    return res[0];
   } catch (error) {
-    console.log(error);
   } finally {
     await connection.end();
   }

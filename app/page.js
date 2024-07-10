@@ -6,10 +6,11 @@ import {
   getShowroomDataSQL,
   getListingByIdSQL,
   deleteListingSQL,
+  getUserSQL,
 } from "./lib/data";
 
 export default async function Home() {
-  await deleteListingSQL("26cf0607-3e05-45f4-af88-bbf5d085d4b3");
+  // await getUserSQL("dev");
   return (
     <main className="flex flex-col min-h-screen items-center ">
       <Carousel />

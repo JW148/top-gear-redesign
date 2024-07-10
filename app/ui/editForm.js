@@ -1,6 +1,6 @@
 "use client";
 
-import { editListing, vercelEdit } from "../lib/actions";
+import { editListing, vercelEdit, editListingSQL } from "../lib/actions";
 import {
   Button,
   Switch,
@@ -26,13 +26,13 @@ export default function EditListing({ details }) {
     <Card className=" m-4 md:w-[500px] w-[90vw] p-4 rounded-sm">
       <form
         className="flex flex-col items-center text-gray-600"
-        action={vercelEdit}
+        action={editListingSQL}
         ref={ref}
       >
         <input
           className="w-full p-4 bg-slate-200 m-2 mb-6 h-12 rounded-sm border-1.5 text-gray-400"
           type="text"
-          name="_id"
+          name="listingID"
           defaultValue={details.listingID}
           readOnly
         />

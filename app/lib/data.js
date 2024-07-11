@@ -130,7 +130,7 @@ export async function getAdminDataSQL() {
     SELECT l.listingID, l.model, l.price, l.colour, l.year, l.mileage, l.description, l.available, l.createdAt, JSON_ARRAYAGG(images.imageID) AS images FROM listings as l
     INNER JOIN images
     ON l.listingID=images.listingID
-    GROUP BY l.listingID;
+    GROUP BY l.listingID
     `;
     //run the query
     const [rows, fields] = await connection.query(sql);

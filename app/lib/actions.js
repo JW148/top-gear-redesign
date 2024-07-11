@@ -581,8 +581,15 @@ export async function editListingSQL(formData) {
     files_to_delete,
   } = Object.fromEntries(formData.entries());
 
-  //do the same for files_to_keep
+  //////////////////// update the images table with in the new specified order ////////////////////
   const filesToKeep = files_to_keep.split(",");
+  console.log(filesToKeep);
+  //append the listingID to the imageID so they can easily be entered into the images table
+  const fileEntries = filesToKeep.map((file) => {
+    return [file, listingID];
+  });
+  console.log(fileEntries);
+  await updateImages(filesToKeep, fileEntries);
 
   ///////////////// write new files and create DB entries //////////////////////
 
@@ -647,5 +654,22 @@ async function handleDelete(files) {
     console.error(error);
   } finally {
     connection.end();
+  }
+}
+
+//rewrite the images in the images table in the new specified order
+async function updateImages(files, fileEntries) {
+  const connection = await createConnection();
+  try {
+    //first delete all the entries
+    const sql = `DELETE FROM images WHERE images.imageID IN (?)`;
+    await connection.query(sql, [files]);
+
+    const sql2 = "INSERT INTO images (imageID, listingID) VALUES ?";
+    await connection.query(sql2, [fileEntries]);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await connection.end();
   }
 }

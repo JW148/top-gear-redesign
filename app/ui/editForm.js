@@ -11,6 +11,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { PiMinusCircleFill } from "react-icons/pi";
 import Link from "next/link";
+import SortableGrid from "./dnd/SortableGrid";
 
 export default function EditListing({ details }) {
   const [files, setFiles] = useState(details.images);
@@ -18,9 +19,9 @@ export default function EditListing({ details }) {
   const [isSelected, setIsSelected] = useState(details.available);
   const ref = useRef(null);
 
-  const handleRemoveImage = (file) => {
-    setFiles((oldArr) => oldArr.filter((item) => item !== file));
-  };
+  useEffect(() => {
+    console.log(files);
+  }, [files]);
 
   return (
     <Card className=" m-4 md:w-[500px] w-[90vw] p-4 rounded-sm">
@@ -80,8 +81,8 @@ export default function EditListing({ details }) {
         <h4 className="self-start font-semibold text-slate-500">
           Existing Files
         </h4>
-
-        <div className="flex flex-row overflow-hidden justify-center flex-wrap mt-4">
+        <SortableGrid items={files} setItems={setFiles} />
+        {/* <div className="flex flex-row overflow-hidden justify-center flex-wrap mt-4">
           {files.map((file) => (
             <div className="relative" key={file}>
               <Button
@@ -102,7 +103,7 @@ export default function EditListing({ details }) {
               />
             </div>
           ))}
-        </div>
+        </div> */}
         {newFiles && (
           <h4 className="self-start font-semibold text-slate-500">New Files</h4>
         )}

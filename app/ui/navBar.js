@@ -82,7 +82,7 @@ export default function NavBar() {
               className={clsx("pl-5 pt-5", {
                 "font-bold": pathname === "/contact",
               })}
-              href="/"
+              href="/contact"
               onClick={() => setMenuOpen(false)}
             >
               Contact
@@ -124,7 +124,7 @@ export default function NavBar() {
           className={clsx("px-20 hover:underline", {
             "font-normal underline": pathname === "/contact",
           })}
-          href="/"
+          href="/contact"
         >
           Contact
         </Link>

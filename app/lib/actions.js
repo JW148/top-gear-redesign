@@ -422,6 +422,8 @@ export async function compress(state, formData) {
 
 import mysql from "mysql2/promise";
 import { randomUUID } from "crypto";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 async function createConnection() {
   try {
@@ -439,6 +441,11 @@ async function createConnection() {
 }
 
 export async function createListing(formData) {
+  //double check the user is logged in
+  const session = await getServerSession(authOptions);
+  //if not, return early and don't complete the function
+  if (session === null) return;
+
   //deconstruct the form data submitted by the client
   const { model, price, colour, year, description, available, mileage } =
     Object.fromEntries(formData.entries());
@@ -543,6 +550,11 @@ async function handleImage(file) {
 }
 
 export async function deleteListingSQL(id) {
+  //double check the user is logged in
+  const session = await getServerSession(authOptions);
+  //if not, return early and don't complete the function
+  if (session === null) return;
+
   const connection = await createConnection();
   try {
     //first delete all the images associated with the specified listing on the local disk
@@ -567,6 +579,10 @@ export async function deleteListingSQL(id) {
 }
 
 export async function editListingSQL(formData) {
+  //double check the user is logged in
+  const session = await getServerSession(authOptions);
+  //if not, return early and don't complete the function
+  if (session === null) return;
   //get the updated form data
   const {
     listingID,
@@ -672,4 +688,17 @@ async function updateImages(files, fileEntries) {
   } finally {
     await connection.end();
   }
+}
+
+export async function contact(formData) {
+  //double check the user is logged in
+  const session = await getServerSession(authOptions);
+  //if not, return early and don't complete the function
+  if (session === null) return;
+  const { name, confirmEmail, email, tel, message } = Object.fromEntries(
+    formData.entries()
+  );
+  console.log(formData);
+  //check if hidden field has been completed, if so it's likely to be a bot
+  if (confirmEmail.length > 0) console.log("BOT!!!");
 }

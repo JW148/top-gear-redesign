@@ -14,7 +14,7 @@ export default function ListstingCard({ details }) {
           <Image
             alt="Card background"
             className="object-cover rounded-sm"
-            src={`/images/${details.images[0]}`}
+            src={`/api/image-endpoint/${details.images[0]}`}
             width={400}
             height={400}
           />

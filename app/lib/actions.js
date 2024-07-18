@@ -540,7 +540,7 @@ async function handleImage(file) {
       .withMetadata()
       .toBuffer();
     //write file
-    const path = join(process.cwd() + "/public/images/" + fileName);
+    const path = join(process.cwd() + "/uploads/" + fileName);
     await writeFile(path, compressedImg);
     return { fileName: fileName, path: path };
   } catch (error) {
@@ -563,7 +563,7 @@ export async function deleteListingSQL(id) {
     let images = rows[0].images;
     //delete all images on disk
     images.forEach(async (file) => {
-      await unlink(join(process.cwd() + "/public/images/" + file));
+      await unlink(join(process.cwd() + "/uploads/" + file));
     });
 
     //then delete the listing entry from the listings table
@@ -663,7 +663,7 @@ async function handleDelete(files) {
 
     //then delete the files from the local disk
     files.forEach(async (file) => {
-      await unlink(join(process.cwd() + "/public/images/" + file));
+      await unlink(join(process.cwd() + "/uploads/" + file));
     });
   } catch (error) {
     console.log("Error deleting files!");

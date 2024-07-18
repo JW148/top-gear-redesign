@@ -33,7 +33,7 @@ export function SortableItem({ id, handleRemoveImage }) {
         key={id}
         alt="Card background"
         className="m-2 object-cover max-h-[70px]"
-        src={`/images/${id}`}
+        src={`/api/image-endpoint/${id}`}
         width={100}
         height={100}
       />

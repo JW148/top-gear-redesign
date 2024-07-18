@@ -37,6 +37,7 @@ next-env.d.ts
 
 # uploads folder
 /public/
+/uploads/
 
 #environment variables
 .env
